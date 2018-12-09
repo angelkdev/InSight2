@@ -1,0 +1,30 @@
+## InSight2 Installation
+
+# Use Ubuntu as base image (not given version means it will use latest)
+FROM ubuntu
+
+# install software needed
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends apt-utils
+RUN apt-get -y install curl wget vim net-tools openssh-server
+RUN apt-get -y install flex bison build-essential libpcap-dev make tar 
+
+# install argus clients
+RUN wget http://qosient.com/argus/src/argus-clients-3.0.8.tar.gz
+RUN tar xfz argus-clients-3.0.8.tar.gz
+RUN cd argus-clients-3.0.8 && ./configure && make && make install
+
+# NOTE: for Argus server installation uncomment following
+#RUN wget http://qosient.com/argus/src/argus-3.0.8.1.tar.gz
+#RUN tar xfz argus-3.0.8.1.tar.gz
+#RUN cd argus-3.0.8.1 && ./configure && make && make install
+
+RUN rm *.gz
+RUN mkdir Enrichment
+RUN mkdir Enrichment/src
+RUN mkdir Enrichment/data
+
+WORKDIR Enrichment
+
+#start the services on run time
+CMD bash

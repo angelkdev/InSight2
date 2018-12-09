@@ -1,0 +1,44 @@
+Instructions for installing:
+
+Download the docker-compose by using the command:
+sudo apt-get install docker-compose
+
+When the install is complete do one of the followings steps(*) on the host machine for the Elasticsearch container to be able to run
+ * sudo sysctl -w vm.max_map_count=262144
+	Note: This is done at runtime so would be temporary so it would need to be entered after every reboot
+or
+ * Add the line to the file /etc/sysctl.conf: vm.max_map_count=262144
+	Note: This is a perminate solution, the host needs to be rebooted after this command for it to take effect.
+		There is a bug where it doesn't take affect, if after running, Kibana says it can't connect to elasticsearch,
+		then run the other command sudo sysctl -w vm.max_map_count=262144. After this it should work.
+
+Next in order to run insight2 just enter (Make sure you're in the Insight2 directory, with the docker-compose.yml file)
+sudo docker-compose up -d --build
+
+After the command is entered it will install everything and be up and running.
+
+Directory Information:
+IMPORTANT: don't move/rename any of the files, the docker-compose.yml uses relative path to the files to place.
+The file in Insight2/Elasticsearch called elasticsearch.yml file is the config files for elasticsearch container, You can modify the file
+	to use whatever you wish, except lines (network.host:172.20.0.2, and http.port:9200) they are necessary for the containers
+	to communicate.
+The file in Insight2/Kibana called kibana.yml, the above lines apply, except the lines (server.port:5601,server.host:'0.0.0.0', 
+	elasticsearch.url:"http://172.20.0.2:9200")
+
+In the directory Insight2/Elasticsearch/Data is used to place into the Elastic search /usr/share/elasticsearch/data. So place your data in this directory
+	The directory is also in the Enrichment contiainer
+
+In the Enrichment container there is the src directory, this is for the python that will run and insert data into the elasticsearch directory.
+	
+
+Commands:
+To enter a container and run commands(no braces): sudo docker attach [container name]
+To exit the container one can enter: exit, this will close the container
+	to avoid this while holding ctrl press p then q
+
+To stop containers enter(no braces): sudo docker stop [containers names] or sudo docker kill [containers names]
+
+To run containers re-enter: sudo docker-compose up -d
+
+
+

@@ -1,0 +1,63 @@
+version: '2'
+
+services:
+        elasticsearch:
+                build: ./ElasticSearch
+                image: insight2/elasticsearch
+                hostname: elsearch
+                volumes:
+                        - ./ElasticSearch/Data:/usr/share/elasticsearch/data
+                        - ./ElasticSearch/Config:/etc/elasticsearch
+
+                ulimits:
+                        memlock:
+                                soft: -1
+                                hard: -1
+                ports:
+                        - 9200:9200
+                        - 9300:9300
+
+                networks:
+                        sightnet:
+                                ipv4_address: 172.20.0.2
+                container_name: elastic_search
+                tty: true
+                stdin_open: true
+
+        kibana:
+                build: ./Kibana
+                image: insight2/kibana
+                hostname: kibana
+                volumes:
+                        - ./Kibana/Config:/etc/kibana
+                ports:
+                        - 5601:5601
+                networks:
+                        sightnet:
+                                ipv4_address: 172.20.0.3
+                container_name: kibana
+                tty: true
+                stdin_open: true
+
+        enrichment:
+                build: ./InSight2
+                image: insight2/enrichment
+                hostname: enrich
+                volumes:
+                        - ./ElasticSearch/Data:/Enrichment/data
+                        - ./Enrichment/src:/Enrichment/src
+                networks:
+                        sightnet:
+                                ipv4_address: 172.20.0.4
+                container_name: enrichment
+                tty: true
+                stdin_open: true
+
+
+
+networks:
+        sightnet:
+                driver: bridge
+                ipam:
+                        config:
+                                - subnet: 172.20.0.0/24
