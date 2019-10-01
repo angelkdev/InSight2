@@ -1,4 +1,4 @@
-## Elasticsearch Installation
+## Elasticsearch Installations
 
 # Use Ubuntu as base image (not given version means it will use latest)
 FROM ubuntu
